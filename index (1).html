@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHS Medical Training Institute</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 15px;
+        }
+
+        #loginScreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .login-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            color: #0077b6;
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        #mainAppScreen {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #0077b6;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+
+        header h1 {
+            color: #0077b6;
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .branch-badge {
+            background: #0077b6;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .staff-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eef2f5;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .btn-logout {
+            background-color: #d90429;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .dashboard {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 130px;
+            background: #e8f4f8;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 5px solid #0077b6;
+        }
+
+        .card h4 {
+            margin: 0;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .card p {
+            margin: 5px 0 0 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0077b6;
+        }
+
+        .card.card-paid {
+            border-left-color: #2a9d8f;
+        }
+        .card.card-paid p {
+            color: #2a9d8f;
+        }
+
+        .card.card-due {
+            border-left-color: #e63946;
+        }
+        .card.card-due p {
+            color: #e63946;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-section > div {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-receipt {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 3px;
+        }
+
+        .btn-pay {
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 3px;
+        }
+
+        .btn-delete {
+            background-color: #e63946;
+            color: white;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0077b6;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+        }
+
+        .receipt-card {
+            border: 2px dashed #0077b6;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .btn-print {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .btn-close {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ১. লগইন স্ক্রিন -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h2>OHS Medical Training Institute</h2>
+            <p style="color:#666; font-size:13px;">সেন্ট্রাল ব্রাঞ্চ লগইন প্যানেল</p>
+
+            <div class="form-group">
+                <label>শাখা নির্বাচন করুন:</label>
+                <select id="loginBranchSelect">
+                    <option value="হেড অফিস (ঢাকা)">হেড অফিস (ঢাকা)</option>
+                    <option value="ধানমন্ডি শাখা">ধানমন্ডি শাখা</option>
+                    <option value="মিরপুর শাখা">মিরপুর শাখা</option>
+                    <option value="উত্তরা শাখা">উত্তরা শাখা</option>
+                    <option value="চট্টগ্রাম শাখা">চট্টগ্রাম শাখা</option>
+                    <option value="রাজশাহী শাখা">রাজশাহী শাখা</option>
+                    <option value="খুলনা শাখা">খুলনা শাখা</option>
+                    <option value="সিলেট শাখা">সিলেট শাখা</option>
+                    <option value="বরিশাল শাখা">বরিশাল শাখা</option>
+                    <option value="রংপুর শাখা">রংপুর শাখা</option>
+                    <option value="ময়মনসিংহ শাখা">ময়মনসিংহ শাখা</option>
+                    <option value="কুমিল্লা শাখা">কুমিল্লা শাখা</option>
+                    <option value="বগুড়া শাখা">বগুড়া শাখা</option>
+                    <option value="অন্যান্য শাখা">অন্যান্য শাখা</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>স্টাফ আইডি:</label>
+                <input type="text" id="loginStaffId" value="admin">
+            </div>
+
+            <div class="form-group">
+                <label>পাসওয়ার্ড:</label>
+                <input type="password" id="loginPassword" value="1234">
+            </div>
+
+            <button type="button" class="btn-submit" onclick="handleLogin()">লগইন করুন</button>
+        </div>
+    </div>
+
+    <!-- ২. মূল ড্যাশবোর্ড -->
+    <div id="mainAppScreen">
+        <header>
+            <h1>OHS Medical Training Institute</h1>
+            <div>
+                <span class="branch-badge" id="displayCurrentBranch">শাখা: হেড অফিস</span>
+            </div>
+            
+            <div class="staff-bar">
+                <span>লগইন আছেন: <b id="currentStaffName" style="color: #0077b6;">admin</b></span>
+                <button type="button" class="btn-logout" onclick="handleLogout()">লগআউট</button>
+            </div>
+        </header>
+
+        <!-- ড্যাশবোর্ড -->
+        <div class="dashboard">
+            <div class="card">
+                <h4>মোট শিক্ষার্থী</h4>
+                <p id="totalStudentsCount">০ জন</p>
+            </div>
+            <div class="card card-paid">
+                <h4>মোট আদায়কৃত ফি</h4>
+                <p id="totalCollectedAmount">০ ৳</p>
+            </div>
+            <div class="card card-due">
+                <h4>মোট বকেয়া ফি</h4>
+                <p id="totalDueAmount">০ ৳</p>
+            </div>
+        </div>
+
+        <h3>নতুন শিক্ষার্থী ভর্তি</h3>
+        
+        <div class="form-group">
+            <label>শিক্ষার্থীর পূর্ণ নাম:</label>
+            <input type="text" id="studentName" placeholder="যেমন: মো: রহিম">
+        </div>
+
+        <div class="form-group">
+            <label>কোর্স নির্বাচন করুন:</label>
+            <select id="courseName">
+                <option value="">-- কোর্স বেছে নিন --</option>
+                <option value="নার্সিং">নার্সিং (Nursing)</option>
+                <option value="ফার্মেসি">ফার্মেসি (Pharmacy)</option>
+                <option value="মেডিকেল ল্যাব">মেডিকেল ল্যাব টেকনোলজি</option>
+                <option value="ডিএমএস">ডিপ্লোমা ইন মেডিকেল সায়েন্স</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>মোবাইল নম্বর:</label>
+            <input type="text" id="mobileNumber" placeholder="যেমন: 017xxxxxxxx">
+        </div>
+
+        <div class="form-group">
+            <label>মোট কোর্স ফি (টাকা):</label>
+            <input type="text" id="totalFee" placeholder="যেমন: 15000">
+        </div>
+
+        <div class="form-group">
+            <label>পরিশোধিত ফি (টাকা):</label>
+            <input type="text" id="paidFee" placeholder="যেমন: 5000">
+        </div>
+
+        <button type="button" class="btn-submit" onclick="submitData()">ভর্তি নিশ্চিত করুন</button>
+
+        <!-- ফিল্টার -->
+        <div class="filter-section">
+            <div>
+                <label>শাখা অনুযায়ী ফিল্টার:</label>
+                <select id="branchFilterSelect" onchange="applyFilters()">
+                    <option value="all">-- সকল শাখা (কেন্দ্রীয় হিসাব) --</option>
+                </select>
+            </div>
+            <div>
+                <label>শিক্ষার্থী খুঁজুন:</label>
+                <input type="text" id="searchInput" onkeyup="applyFilters()" placeholder="নাম বা মোবাইল দিয়ে খুঁজুন...">
+            </div>
+        </div>
+
+        <h3>শিক্ষার্থীদের তালিকা ও হিসাব</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>আইডি</th>
+                        <th>শাখা</th>
+                        <th>নাম</th>
+                        <th>কোর্স</th>
+                        <th>মোবাইল</th>
+                        <th>মোট ফি</th>
+                        <th>পরিশোধিত</th>
+                        <th>বকেয়া</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ফি জমা পপ-আপ -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0; color: #0077b6;">বকেয়া ফি জমা</h3>
+            <p id="modalStudentInfo" style="font-weight: bold;"></p>
+            <p id="modalDueInfo" style="color: red; font-weight: bold;"></p>
+            
+            <input type="text" id="payAmountInput" placeholder="টাকার পরিমাণ লিখুন">
+            
+            <button type="button" class="btn-print" style="background:#2a9d8f; margin-top:10px;" onclick="confirmPayment()">জমা নিশ্চিত করুন</button>
+            <button type="button" class="btn-close" onclick="closeModal('paymentModal')">বাতিল</button>
+        </div>
+    </div>
+
+    <!-- রসিদ পপ-আপ -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div id="printableReceipt" class="receipt-card">
+                <div class="receipt-header">
+                    <h3 style="margin: 0; color: #0077b6; font-size: 16px;">OHS Medical Training Institute</h3>
+                    <p style="margin: 3px 0 0 0; font-size: 12px; color: #333; font-weight: bold;" id="rBranchName">শাখা</p>
+                    <p style="margin: 2px 0 0 0; font-size: 10px; color: #777;">অফিসিয়াল ভর্তি ও ফি রসিদ</p>
+                </div>
+                <div class="receipt-row"><span>আইডি:</span> <b id="rId"></b></div>
+                <div class="receipt-row"><span>শিক্ষার্থীর নাম:</span> <span id="rName"></span></div>
+                <div class="receipt-row"><span>কোর্স:</span> <span id="rCourse"></span></div>
+                <div class="receipt-row"><span>মোবাইল:</span> <span id="rMobile"></span></div>
+                <hr style="border: 0.5px dashed #ccc;">
+                <div class="receipt-row"><span>মোট ফি:</span> <b id="rTotal"></b></div>
+                <div class="receipt-row"><span>পরিশোধিত:</span> <b id="rPaid" style="color: green;"></b></div>
+                <div class="receipt-row"><span>বকেয়া:</span> <b id="rDue" style="color: red;"></b></div>
+                <hr style="border: 0.5px dashed #ccc;">
+                <div class="receipt-row" style="font-size: 10px; color: #777;">
+                    <span>তারিখ: <span id="rDate"></span></span>
+                    <span>রিসিভকারী: <span id="rStaff"></span></span>
+                </div>
+            </div>
+
+            <button type="button" class="btn-print" onclick="window.print()">প্রিন্ট / PDF সেভ করুন</button>
+            <button type="button" class="btn-close" onclick="closeModal('receiptModal')">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <script>
+        var validStaffs = {
+            "admin": "1234",
+            "staff01": "ohs2024"
+        };
+
+        window.onload = function() {
+            // পেজ রিফ্রেশ করলে সরাসরি লগইন বক্স আসবে ঝামেলা ছাড়াই
+            showLogin();
+        };
+
+        function handleLogin() {
+            var branch = document.getElementById("loginBranchSelect").value;
+            var staffId = document.getElementById("loginStaffId").value.trim();
+            var password = document.getElementById("loginPassword").value.trim();
+
+            if (validStaffs[staffId] && validStaffs[staffId] === password) {
+                showApp(staffId, branch);
+            } else {
+                alert("ভুল আইডি অথবা পাসওয়ার্ড!");
+            }
+        }
+
+        function handleLogout() {
+            showLogin();
+        }
+
+        function showLogin() {
+            document.getElementById("loginScreen").style.display = "flex";
+            document.getElementById("mainAppScreen").style.display = "none";
+        }
+
+        var activeStaff = "admin";
+        var activeBranch = "হেড অফিস (ঢাকা)";
+
+        function showApp(staffId, branch) {
+            activeStaff = staffId;
+            activeBranch = branch;
+
+            document.getElementById("loginScreen").style.display = "none";
+            document.getElementById("mainAppScreen").style.display = "block";
+            document.getElementById("currentStaffName").innerText = staffId;
+            document.getElementById("displayCurrentBranch").innerText = "শাখা: " + branch;
+            
+            updateBranchFilterDropdown();
+            applyFilters();
+        }
+
+        function parseBanglaNum(input) {
+            if (!input) return 0;
+            var bangla = {'০':0, '১':1, '২':2, '৩':3, '৪':4, '৫':5, '৬':6, '৭':7, '৮':8, '৯':9};
+            var str = String(input).trim();
+            var converted = str.replace(/[০-৯]/g, function(d) { return bangla[d]; });
+            return Number(converted);
+        }
+
+        function getStoredStudents() {
+            var data = localStorage.getItem("ohs_students");
+            return data ? JSON.parse(data) : [];
+        }
+
+        function submitData() {
+            var name = document.getElementById("studentName").value;
+            var course = document.getElementById("courseName").value;
+            var mobile = document.getElementById("mobileNumber").value;
+            var total = parseBanglaNum(document.getElementById("totalFee").value);
+            var paid = parseBanglaNum(document.getElementById("paidFee").value);
+
+            if (name == "" || course == "" || mobile == "" || total <= 0) {
+                alert("সবগুলো ঘর পূরণ করুন!");
+                return;
+            }
+
+            var students = getStoredStudents();
+            var nextIdNumber = 101 + students.length;
+            var studentId = "OHS-" + nextIdNumber;
+            var due = total - paid;
+
+            var newStudent = {
+                id: studentId,
+                branch: activeBranch,
+                name: name,
+                course: course,
+                mobile: mobile,
+                total: total,
+                paid: paid,
+                due: due,
+                date: new Date().toLocaleDateString('bn-BD')
+            };
+
+            students.push(newStudent);
+            localStorage.setItem("ohs_students", JSON.stringify(students));
+
+            updateBranchFilterDropdown();
+            applyFilters();
+
+            document.getElementById("studentName").value = "";
+            document.getElementById("courseName").value = "";
+            document.getElementById("mobileNumber").value = "";
+            document.getElementById("totalFee").value = "";
+            document.getElementById("paidFee").value = "";
+        }
+
+        function updateBranchFilterDropdown() {
+            var students = getStoredStudents();
+            var select = document.getElementById("branchFilterSelect");
+            var currentVal = select.value;
+
+            var branches = [];
+            for (var i = 0; i < students.length; i++) {
+                var bName = students[i].branch || "মূল শাখা";
+                if (!branches.includes(bName)) {
+                    branches.push(bName);
+                }
+            }
+
+            select.innerHTML = '<option value="all">-- সকল শাখা (কেন্দ্রীয় হিসাব) --</option>';
+            for (var b = 0; b < branches.length; b++) {
+                var opt = document.createElement("option");
+                opt.value = branches[b];
+                opt.innerText = branches[b];
+                select.appendChild(opt);
+            }
+            select.value = currentVal;
+        }
+
+        function applyFilters() {
+            var selectedBranch = document.getElementById("branchFilterSelect").value;
+            var query = document.getElementById("searchInput").value.toLowerCase();
+            var allStudents = getStoredStudents();
+
+            var filtered = allStudents.filter(function(s) {
+                var sBranch = s.branch || "মূল শাখা";
+                var matchBranch = (selectedBranch === "all") || (sBranch === selectedBranch);
+                var matchSearch = s.name.toLowerCase().includes(query) || 
+                                  s.id.toLowerCase().includes(query) || 
+                                  (s.mobile && s.mobile.includes(query));
+                return matchBranch && matchSearch;
+            });
+
+            showStudents(filtered);
+        }
+
+        function showStudents(students) {
+            var tableBody = document.getElementById("studentTableBody");
+            tableBody.innerHTML = "";
+
+            var totalPaidSum = 0;
+            var totalDueSum = 0;
+
+            for (var j = 0; j < students.length; j++) {
+                totalPaidSum += Number(students[j].paid || 0);
+                totalDueSum += Number(students[j].due || 0);
+            }
+
+            document.getElementById("totalStudentsCount").innerText = students.length + " জন";
+            document.getElementById("totalCollectedAmount").innerText = totalPaidSum + " ৳";
+            document.getElementById("totalDueAmount").innerText = totalDueSum + " ৳";
+
+            var allStudents = getStoredStudents();
+
+            for (var i = 0; i < students.length; i++) {
+                var s = students[i];
+                var row = tableBody.insertRow();
+                var currentDue = Number(s.due || 0);
+
+                row.insertCell(0).innerHTML = "<b>" + s.id + "</b>";
+                row.insertCell(1).innerHTML = '<span style="color:#0077b6; font-weight:bold;">' + (s.branch || "মূল") + '</span>';
+                row.insertCell(2).innerHTML = s.name;
+                row.insertCell(3).innerHTML = s.course;
+                row.insertCell(4).innerHTML = s.mobile;
+                row.insertCell(5).innerHTML = Number(s.total) + " ৳";
+                row.insertCell(5).innerHTML = Number(s.paid) + " ৳";
+
+                var dueCell = row.insertCell(7);
+                dueCell.innerHTML = currentDue + " ৳";
+                if (currentDue > 0) {
+                    dueCell.style.color = "red";
+                    dueCell.style.fontWeight = "bold";
+                } else {
+                    dueCell.style.color = "green";
+                    dueCell.style.fontWeight = "bold";
+                }
+
+                // প্রকৃত ইনডেক্স খুঁজে নেওয়া
+                var actualIndex = 0;
+                for (var k = 0; k < allStudents.length; k++) {
+                    if (allStudents[k].id === s.id) {
+                        actualIndex = k;
+                        break;
+                    }
+                }
+
+                var actionCell = row.insertCell(8);
+                actionCell.innerHTML = 
+                    '<button class="btn-receipt" onclick="viewReceipt(' + actualIndex + ')">রসিদ</button>' +
+                    '<button class="btn-pay" onclick="openPaymentModal(' + actualIndex + ')">ফি জমা</button>' +
+                    '<button class="btn-delete" onclick="deleteStudent(' + actualIndex + ')">মুছুন</button>';
+            }
+        }
+
+        function viewReceipt(index) {
+            var students = getStoredStudents();
+            var s = students[index];
+
+            document.getElementById("rId").innerText = s.id;
+            document.getElementById("rBranchName").innerText = "শাখা: " + (s.branch || "হেড অফিস");
+            document.getElementById("rName").innerText = s.name;
+            document.getElementById("rCourse").innerText = s.course;
+            document.getElementById("rMobile").innerText = s.mobile;
+            document.getElementById("rTotal").innerText = s.total + " ৳";
+            document.getElementById("rPaid").innerText = s.paid + " ৳";
+            document.getElementById("rDue").innerText = s.due + " ৳";
+            document.getElementById("rDate").innerText = s.date || new Date().toLocaleDateString();
+            document.getElementById("rStaff").innerText = activeStaff;
+
+            document.getElementById("receiptModal").style.display = "flex";
+        }
+
+        var currentPayingIndex = null;
+
+        function openPaymentModal(index) {
+            var students = getStoredStudents();
+            var student = students[index];
+
+            if (Number(student.due) <= 0) {
+                alert("এই শিক্ষার্থীর কোনো বকেয়া নেই!");
+                return;
+            }
+
+            currentPayingIndex = index;
+            document.getElementById("modalStudentInfo").innerText = "শিক্ষার্থী: " + student.name;
+            document.getElementById("modalDueInfo").innerText = "বকেয়া আছে: " + student.due + " ৳";
+            document.getElementById("payAmountInput").value = "";
+
+            document.getElementById("paymentModal").style.display = "flex";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+            currentPayingIndex = null;
+        }
+
+        function confirmPayment() {
+            if (currentPayingIndex === null) return;
+
+            var amount = parseBanglaNum(document.getElementById("payAmountInput").value);
+            var students = getStoredStudents();
+            var student = students[currentPayingIndex];
+
+            if (isNaN(amount) || amount <= 0) {
+                alert("সঠিক টাকার পরিমাণ লিখুন!");
+                return;
+            }
+
+            if (amount > Number(student.due)) {
+                alert("বকেয়ার চেয়ে বেশি টাকা নেওয়া যাবে না!");
+                return;
+            }
+
+            student.paid = Number(student.paid) + amount;
+            student.due = Number(student.due) - amount;
+
+            localStorage.setItem("ohs_students", JSON.stringify(students));
+            applyFilters();
+            closeModal('paymentModal');
+            alert("ধন্যবাদ! টাকা সফলভাবে জমা হয়েছে।");
+        }
+
+        function deleteStudent(index) {
+            var confirmDelete = confirm("আপনি কি নিশ্চিত এই তথ্য মুছে ফেলতে চান?");
+            if (confirmDelete) {
+                var students = getStoredStudents();
+                students.splice(index, 1);
+                localStorage.setItem("ohs_students", JSON.stringify(students));
+                updateBranchFilterDropdown();
+                applyFilters();
+            }
+        }
+    </script>
+
+</body>
+</html>
